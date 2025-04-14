@@ -1,0 +1,47 @@
+UIS-Connect/
+│
+├── app.py                  # Main Flask application file
+├── config.py               # Configuration settings
+├── schema.sql              # Database schema
+├── sample_data.sql         # Sample data for the database
+├── requirements.txt        # Python dependencies
+│
+├── instance/               # Instance folder (contains the SQLite database)
+│   └── uis_connect.db      # SQLite database file
+│
+├── static/                 # Static files (CSS, JavaScript, Images)
+│   ├── css/
+│   │   ├── style.css       # Main stylesheet
+│   │   └── bootstrap.min.css # Bootstrap (optional)
+│   ├── js/
+│   │   └── main.js         # JavaScript functionality
+│   └── images/
+│       └── logo.png        # Site logo
+│
+├── templates/              # Jinja2 HTML templates
+│   ├── base.html           # Base template with common elements
+│   ├── index.html          # Homepage
+│   ├── auth/
+│   │   ├── login.html      # Login page
+│   │   └── register.html   # Registration page
+│   ├── user/
+│   │   ├── profile.html    # User profile page
+│   │   ├── edit_profile.html # Edit profile page
+│   │   └── friends.html    # Friends list and management
+│   ├── posts/
+│   │   ├── create.html     # Create post form
+│   │   ├── view.html       # View single post with comments
+│   │   └── edit.html       # Edit post form
+│   └── courses/
+│       ├── list.html       # List of courses
+│       └── view.html       # View single course with related posts
+│
+└── modules/                # Application modules
+    ├── __init__.py         # Package initialization
+    ├── auth.py             # Authentication functions (login, register)
+    ├── user.py             # User-related functions
+    ├── posts.py            # Post-related functions
+    ├── comments.py         # Comment-related functions
+    ├── likes.py            # Like-related functions
+    ├── friends.py          # Friend-related functions
+    └── courses.py          # Course-related functions
