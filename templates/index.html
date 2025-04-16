@@ -1,0 +1,241 @@
+{% extends 'base.html' %}
+
+{% block title %}UIS-Connect - Campus Social Network{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="row">
+    <!-- Left sidebar - User profile card and quick links -->
+    <div class="col-lg-3 d-none d-lg-block">
+      {% if session and session.user_id %}
+        <div class="card shadow mb-4">
+          <div class="card-body text-center">
+            <div class="py-3">
+              <i class="bi bi-person-circle text-primary" style="font-size: 4rem;"></i>
+            </div>
+            <h5 class="card-title">{{ session.username }}</h5>
+            <a href="{{ url_for('profile', username=session.username) }}" class="btn btn-sm btn-outline-primary mt-2">
+              View Profile
+            </a>
+          </div>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <a href="{{ url_for('create_post') }}" class="text-decoration-none">
+                <i class="bi bi-plus-square me-2"></i>Create New Post
+              </a>
+            </li>
+            <li class="list-group-item">
+              <a href="{{ url_for('friends') }}" class="text-decoration-none">
+                <i class="bi bi-people me-2"></i>Friends
+              </a>
+            </li>
+            <li class="list-group-item">
+              <a href="{{ url_for('list_courses') }}" class="text-decoration-none">
+                <i class="bi bi-book me-2"></i>My Courses
+              </a>
+            </li>
+          </ul>
+        </div>
+      {% else %}
+        <div class="card shadow mb-4">
+          <div class="card-header bg-primary text-white">
+            <h3 class="h5 mb-0">Welcome to UIS-Connect!</h3>
+          </div>
+          <div class="card-body">
+            <p>Connect with classmates, share course materials, and organize study groups.</p>
+            <div class="d-grid gap-2">
+              <a href="{{ url_for('register') }}" class="btn btn-primary">Sign Up</a>
+              <a href="{{ url_for('login') }}" class="btn btn-outline-primary">Log In</a>
+            </div>
+          </div>
+        </div>
+      {% endif %}
+      
+      <!-- Quick course links -->
+      {% if session and session.user_id and user_courses %}
+        <div class="card shadow mb-4">
+          <div class="card-header bg-light">
+            <h3 class="h6 mb-0">My Courses</h3>
+          </div>
+          <div class="card-body p-0">
+            <ul class="list-group list-group-flush">
+              {% for course in user_courses %}
+                <li class="list-group-item">
+                  <a href="{{ url_for('view_course', course_id=course.course_id) }}" class="text-decoration-none">
+                    {{ course.course_code }} - {{ course.course_name }}
+                  </a>
+                </li>
+              {% endfor %}
+              <li class="list-group-item">
+                <a href="{{ url_for('list_courses') }}" class="text-decoration-none text-primary">
+                  <i class="bi bi-plus-circle me-1"></i>Add More Courses
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+    
+    <!-- Main content - Post feed -->
+    <div class="col-lg-6">
+      {% if session and session.user_id %}
+        <!-- Create post card -->
+        <div class="card shadow mb-4">
+          <div class="card-body">
+            <form action="{{ url_for('create_post') }}" method="get">
+              <div class="d-flex align-items-center mb-2">
+                <i class="bi bi-person-circle text-primary me-3" style="font-size: 2.5rem;"></i>
+                <button type="submit" class="form-control text-start text-muted py-2">
+                  What's on your mind?
+                </button>
+              </div>
+              <div class="d-flex justify-content-around border-top pt-3">
+                <button type="submit" class="btn btn-light">
+                  <i class="bi bi-pencil me-2"></i>Post
+                </button>
+                <button type="submit" class="btn btn-light">
+                  <i class="bi bi-image me-2"></i>Photo
+                </button>
+                <button type="submit" class="btn btn-light">
+                  <i class="bi bi-tag me-2"></i>Course Tag
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      {% endif %}
+      
+      <!-- Post feed -->
+      <div class="post-feed">
+        {% if posts %}
+          {% for post in posts %}
+            <div class="card shadow mb-4">
+              <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                <div>
+                  <a href="{{ url_for('profile', username=post.username) }}" class="text-decoration-none">
+                    <span class="fw-bold text-primary">{{ post.first_name }} {{ post.last_name }}</span>
+                    <span class="text-muted">@{{ post.username }}</span>
+                  </a>
+                  {% if post.course_tags %}
+                    <div class="mt-1">
+                      {% for tag in post.course_tags %}
+                        <a href="{{ url_for('view_course', course_id=tag.course_id) }}" 
+                           class="badge bg-primary text-decoration-none me-1">
+                          {{ tag.course_code }}
+                        </a>
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+                </div>
+                <small class="text-muted">{{ post.post_date.strftime('%b %d, %Y') }}</small>
+              </div>
+              <div class="card-body">
+                <p class="card-text">{{ post.content }}</p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <form action="{{ url_for('toggle_like', post_id=post.post_id) }}" method="post" class="d-inline">
+                      <button type="submit" class="btn btn-sm {% if post.user_liked %}btn-primary{% else %}btn-outline-primary{% endif %} btn-like">
+                        <i class="bi bi-heart{% if post.user_liked %}-fill{% endif %}"></i> 
+                        {{ post.like_count if post.like_count > 0 else 'Like' }}
+                      </button>
+                    </form>
+                    <a href="{{ url_for('view_post', post_id=post.post_id) }}" class="btn btn-sm btn-outline-secondary ms-2">
+                      <i class="bi bi-chat"></i> 
+                      {{ post.comment_count if post.comment_count > 0 else 'Comment' }}
+                    </a>
+                  </div>
+                  <a href="{{ url_for('view_post', post_id=post.post_id) }}" class="btn btn-sm btn-link">
+                    View Details
+                  </a>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        {% else %}
+          <div class="card shadow">
+            <div class="card-body text-center py-5">
+              <i class="bi bi-newspaper text-muted mb-3" style="font-size: 3rem;"></i>
+              <h3 class="h5">No posts to show</h3>
+              <p class="text-muted">
+                {% if session and session.user_id %}
+                  Be the first to post something or add more friends to see their posts.
+                {% else %}
+                  Log in to see posts from UIS students.
+                {% endif %}
+              </p>
+              {% if session and session.user_id %}
+                <a href="{{ url_for('create_post') }}" class="btn btn-primary mt-2">
+                  Create Your First Post
+                </a>
+              {% else %}
+                <a href="{{ url_for('login') }}" class="btn btn-primary mt-2">
+                  Log In
+                </a>
+              {% endif %}
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+    
+    <!-- Right sidebar - Campus events and announcements -->
+    <div class="col-lg-3 d-none d-lg-block">
+      <!-- UIS announcements card -->
+      <div class="card shadow mb-4">
+        <div class="card-header bg-light">
+          <h3 class="h6 mb-0">Campus Announcements</h3>
+        </div>
+        <div class="card-body p-0">
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <small class="text-muted d-block">April 18, 2025</small>
+              <a href="#" class="text-decoration-none">Final Exam Schedule Posted</a>
+            </li>
+            <li class="list-group-item">
+              <small class="text-muted d-block">April 15, 2025</small>
+              <a href="#" class="text-decoration-none">Library Extended Hours During Finals Week</a>
+            </li>
+            <li class="list-group-item">
+              <small class="text-muted d-block">April 10, 2025</small>
+              <a href="#" class="text-decoration-none">Fall 2025 Registration Now Open</a>
+            </li>
+          </ul>
+        </div>
+        <div class="card-footer text-center">
+          <a href="#" class="text-decoration-none">View All Announcements</a>
+        </div>
+      </div>
+      
+      <!-- Study groups card -->
+      <div class="card shadow mb-4">
+        <div class="card-header bg-light">
+          <h3 class="h6 mb-0">Active Study Groups</h3>
+        </div>
+        <div class="card-body p-0">
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <a href="#" class="text-decoration-none fw-bold">CSC367 Final Exam Prep</a>
+              <div class="text-muted small">Friday, April 19 @ 3:00 PM</div>
+              <div class="text-muted small">Location: Library Room 210</div>
+            </li>
+            <li class="list-group-item">
+              <a href="#" class="text-decoration-none fw-bold">BIO241 Study Session</a>
+              <div class="text-muted small">Thursday, April 18 @ 2:00 PM</div>
+              <div class="text-muted small">Location: Science Building Lab 305</div>
+            </li>
+            <li class="list-group-item">
+              <a href="#" class="text-decoration-none fw-bold">MAT332 Problem Solving</a>
+              <div class="text-muted small">Wednesday, April 17 @ 4:30 PM</div>
+              <div class="text-muted small">Location: Math Tutoring Center</div>
+            </li>
+          </ul>
+        </div>
+        <div class="card-footer text-center">
+          <a href="#" class="text-decoration-none">View All Study Groups</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

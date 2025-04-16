@@ -1,0 +1,167 @@
+/* Custom CSS for UIS-Connect */
+
+/* Main styles */
+body {
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Card styling */
+.card {
+    border-radius: 0.5rem;
+    overflow: hidden;
+    border: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card.shadow:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+.card-header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+/* Post feed styles */
+.post-feed .card {
+    margin-bottom: 1.5rem;
+}
+
+.post-feed .card-body {
+    padding: 1.5rem;
+}
+
+/* Comment styles */
+.comment-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #e9ecef;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: #6c757d;
+}
+
+/* Profile styles */
+.profile-header {
+    background-color: #e9ecef;
+    padding: 2rem 0;
+    margin-bottom: 2rem;
+    border-radius: 0.5rem;
+}
+
+.profile-img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background-color: #dee2e6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    color: #6c757d;
+    margin: 0 auto 1rem;
+}
+
+/* Course tag styles */
+.course-tag {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    background-color: #e9ecef;
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+    color: #495057;
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+
+.course-tag:hover {
+    background-color: #dee2e6;
+    color: #212529;
+}
+
+/* Custom primary color (UIS blue) */
+.bg-primary {
+    background-color: #0e4c92 !important;
+}
+
+.btn-primary {
+    background-color: #0e4c92;
+    border-color: #0e4c92;
+}
+
+.btn-primary:hover {
+    background-color: #0a3c75;
+    border-color: #0a3c75;
+}
+
+.text-primary {
+    color: #0e4c92 !important;
+}
+
+/* Like button animation */
+.btn-like.active {
+    animation: pulse 0.3s ease-in-out;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+/* Custom styles for the navbar */
+.navbar {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Custom form controls */
+.form-control:focus {
+    border-color: #0e4c92;
+    box-shadow: 0 0 0 0.25rem rgba(14, 76, 146, 0.25);
+}
+
+/* Custom container for small screens */
+@media (max-width: 768px) {
+    .container {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+}
+
+/* Friend list styles */
+.friend-card {
+    transition: transform 0.2s;
+}
+
+.friend-card:hover {
+    transform: translateY(-3px);
+}
+
+/* Improved accessibility */
+.btn:focus, .form-control:focus, .form-check-input:focus {
+    box-shadow: 0 0 0 0.25rem rgba(14, 76, 146, 0.25);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #adb5bd;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #6c757d;
+}
