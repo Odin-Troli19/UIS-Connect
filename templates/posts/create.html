@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block title %}Create New Post - UIS-Connect{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+          <h2 class="h4 mb-0">Create New Post</h2>
+        </div>
+        <div class="card-body">
+          <form method="post">
+            <div class="mb-3">
+              <label for="content" class="form-label">Post Content</label>
+              <textarea class="form-control" id="content" name="content" rows="5" required></textarea>
+            </div>
+            
+            <div class="mb-3">
+              <label class="form-label">Course Tags</label>
+              <div class="card">
+                <div class="card-header bg-light">
+                  <span class="fw-bold">Your Courses</span>
+                </div>
+                <div class="card-body">
+                  {% if user_courses %}
+                    {% for course in user_courses %}
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="course_ids" id="course{{ course.course_id }}" value="{{ course.course_id }}">
+                        <label class="form-check-label" for="course{{ course.course_id }}">
+                          {{ course.course_code }} - {{ course.course_name }}
+                        </label>
+                      </div>
+                    {% endfor %}
+                  {% else %}
+                    <p class="text-muted">You're not enrolled in any courses yet.</p>
+                    <a href="{{ url_for('list_courses') }}" class="btn btn-sm btn-outline-primary">Browse Courses</a>
+                  {% endif %}
+                </div>
+              </div>
+              
+              {% if courses and courses|length > user_courses|length %}
+                <div class="mt-3">
+                  <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#otherCoursesCollapse">
+                    Show Other Courses
+                  </button>
+                  <div class="collapse mt-2" id="otherCoursesCollapse">
+                    <div class="card">
+                      <div class="card-header bg-light">
+                        <span class="fw-bold">Other Courses</span>
+                      </div>
+                      <div class="card-body">
+                        {% for course in courses %}
+                          {% if not course.course_id in user_courses|map(attribute='course_id') %}
+                            <div class="form-check">
+                              <input class="form-check-input" type="checkbox" name="course_ids" id="course{{ course.course_id }}" value="{{ course.course_id }}">
+                              <label class="form-check-label" for="course{{ course.course_id }}">
+                                {{ course.course_code }} - {{ course.course_name }}
+                              </label>
+                            </div>
+                          {% endif %}
+                        {% endfor %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              {% endif %}
+            </div>
+            
+            <div class="mb-3 form-check">
+              <input type="checkbox" class="form-check-input" id="is_public" name="is_public" checked>
+              <label class="form-check-label" for="is_public">Make post public</label>
+              <small class="form-text text-muted d-block">
+                Public posts are visible to all users. Private posts are only visible to your friends.
+              </small>
+            </div>
+            
+            <div class="d-flex justify-content-between">
+              <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">Cancel</a>
+              <button type="submit" class="btn btn-primary">Post</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
